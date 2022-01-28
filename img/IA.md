@@ -11,7 +11,7 @@ import os
 import time
 from functools import reduce
 from sklearn import model_selection
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler 
 from keras.datasets import mnist
 from keras.utils import np_utils
 from tensorflow.keras.utils import to_categorical
@@ -31,28 +31,28 @@ Ce programme applique la méthode de discrimination de kppv sur un ensemble d'in
 
 - La variable test :  
     Un tableau qui doit contenir les différents individus à classer rangés par colonne. Le nombre de ligne est 2 et le nombre de colonne est n.
+    
 
-
-- La variable apprentissage :
+- La variable apprentissage : 
     Un tableau qui doit contenir les différents individus de l'ensemble d'apprentissage rangés par colonne. Le nombre de ligne est 2 et le nombre de colonne est m.
-
-
-
+    
+    
+    
 - La variable oracle :
      Vecteur qui indique la classification de l'ensemble d'apprentissage oracle[i] indique le nombre de la classe de l'individu apprentissage[:i].
-
-
+     
+     
 - La variable K :
    Indique le nombre de voisins utilisés dans l'algorithme.
-
+   
 #### Le résultat :
 
 - La variable clas :
-    Vecteur qui indique le résultat de l'algorithme de la discrimination clas[i] indique le numéro de la classe de l'individu x[:,i]
-
-
-
-
+    Vecteur qui indique le résultat de l'algorithme de la discrimination clas[i] indique le numéro de la classe de l'individu x[:,i] 
+   
+ 
+   
+   
 
 ### L'exemple de l'exécution de l'algorithme
 
@@ -71,12 +71,12 @@ learn =[
      [ 6  0]
      [ 6  2]
     ]
-
+    
 oracle= [0,0,1,1,0,1,0,0,0,1,1]
 
 k=3
 
-### on calcule distance-euclidean chaque élément de test avec l'ensemble des éléments learn
+### on calcule distance-euclidean chaque élément de test avec l'ensemble des éléments learn 
 
 ### Etape 1 :
 
@@ -120,42 +120,42 @@ k=3
     distance-euclidean [8 9]  et  [4 2]  est  8.06225774829855
     distance-euclidean [8 9]  et  [6 0]  est  9.219544457292887
     distance-euclidean [8 9]  et  [6 2]  est  7.280109889280518
-
+    
 ### Etape 2 :
-#### On regarde les k distance minimales
+#### On regarde les k distance minimales 
 
 - pour test[0]=[3,2] sont :
 
-        *    1.O  avec [4 2] indice dans learn 8
+        *    1.O  avec [4 2] indice dans learn 8 
         *    2.23 avec [2 0] indice dans learn 1
         *    2.23 avec [4 4] indice dans learn 3
-
+        
 - pour test[1]=[4,7] sont :
-
-
+        
+  
          * 2    avec  [6 7] indice dans learn 5
          * 2.23 avec  [2 6] indice dans learn 2
          * 3    avec  [4 4] indice dans learn 3
-
+         
 - pour test[2]=[8 9] sont :
-
+    
         * 2.83 avec [6 7] indice dans learn  5
         * 5.38 avec [10 4] indice dans learn 6
         * 6.4 avec  [4 4] indice dans learn  3
-
+        
 ### Etape 3 :
-#### On regarder les classes/groupe dans des k distances minimales dans oracle
+#### On regarder les classes/groupe dans des k distances minimales dans oracle 
 
 - pour ***test[0]=[3,2]***   
-
+    
     * oracle[8] = 0
     * oracle[1] = 0
     * oracle[3] = 1
-
-
+    
+    
 
 - pour ***test[1]=[4,7]***  
-
+    
     * oracle[5]= 1
     * oracle[2]= 1
     * oracle[3]= 1
@@ -168,12 +168,12 @@ k=3
     * oracle[5] = 1
     * oracle[6] = 0
     * oracle[3] = 1
-
+    
 ### Etape 4 :
-#### on vote , on regarde parmis les classes/groupes ceux qui sont les plus nombreux
+#### on vote , on regarde parmis les classes/groupes ceux qui sont les plus nombreux 
 
 
-- pour ***test[0]=[3,2]*** on voit qu'il est de la classe 0
+- pour ***test[0]=[3,2]*** on voit qu'il est de la classe 0 
 
 
 
@@ -185,14 +185,14 @@ k=3
 
 
 
+    
 
-
-## L'implementation de l'algorithme KNNV en python
+## L'implementation de l'algorithme KNNV en python 
 
 
 ```python
 def dist(x,y,dname='euclidean'):
-
+    
     if (dname == 'manhattan') or (dname == 'cityblock'):
         d = np.sum(np.abs(x-y))
     elif dname == 'euclidean':
@@ -214,12 +214,12 @@ def KNNV(test, learn, ylearn, K=1, dname='euclidean'):
     labels_id = np.unique(ylearn)
     labels_nb = len(labels_id)
     dist_to_learn = np.zeros((test_nb, learn_nb))
-    votes = np.zeros((test_nb,labels_nb))
+    votes = np.zeros((test_nb,labels_nb)) 
     for i in range(test_nb):
         for j in range(learn_nb):
-            dist_to_learn[i,j] = dist(test[i,:],learn[j,:],dname)  # Etape 1
-        KNN_index = np.argsort(dist_to_learn[i,:])[:K]             # Etape 2  argSort envoit les indices K des element d'un tableau
-        KNN_y = ylearn[[KNN_index]]                                # Etape 3
+            dist_to_learn[i,j] = dist(test[i,:],learn[j,:],dname)  # Etape 1 
+        KNN_index = np.argsort(dist_to_learn[i,:])[:K]             # Etape 2  argSort envoit les indices K des element d'un tableau 
+        KNN_y = ylearn[[KNN_index]]                                # Etape 3 
         for j in range(labels_nb):
             votes[i,j] = len(np.argwhere(KNN_y==labels_id[j]))     # Etape 4 argWhere Trouvez les indices des éléments du tableau non nuls, regroupés par élément.
     ypred = np.argmax(votes,axis=1) # Returns the indices of the maximum values along an axis.
@@ -264,9 +264,9 @@ affiche_classeKKpV(test,clas,2)
 ```
 
 
-
-![png](img/output_9_0.png)
-
+    
+![png](output_9_0.png)
+    
 
 
 ## Le Perceptron
@@ -279,47 +279,47 @@ Ce programme doit évaluer la sortie d'un perceptron simple ( 1 neurone ) pour u
 
     - La variable w contient les poids synaptiques du  neurones. C'est un vecteur à 3 lignes. La première ligne correspond au seuil.
     - La variable x contient l'éntrée du réseau de neurones. C'est un vecteur à 2 lignes.
-    - La variable active indique la fonction d'activation utilisée.
-
+    - La variable active indique la fonction d'activation utilisée. 
+    
     * Si active == 0 :
       σ(x) = sign(x)
     * Si active == 1 :
       σ(x) = tanh(x)
-
+      
 ### Le Résultat :
 
     - La variable y est un scalaire correspondant à la sortie du neurone
-
-## - 2 Etude de l'apprentissage
-
-
+    
+## - 2 Etude de l'apprentissage 
+    
+    
 Ce programme retourne le poids de w obtenu par apprentissage selon la règle d'apprentissage utilisant la descente du gradient .
 
 
 ### Les paramètres :
 
  - La variable x contient l'ensemble d'apprentissage. C'est une matrice à 2 lignes et n colonnes.
-
- - La variable yd(i) indique la réponse désirée pour chaque élément x(:,i).
-
+ 
+ - La variable yd(i) indique la réponse désirée pour chaque élément x(:,i). 
+ 
  yd est un vecteur de 1 ligne et n colonnes de valeurs +1 ou -1 (classification à 2 classes).
-
- - On suggère d'utiliser 100 itérations
-
-
+ 
+ - On suggère d'utiliser 100 itérations 
+ 
+ 
 ### Le Résultat :
 
  - La variable w contient les poids synaptiques du neurone après apprentissage. C'est un vecteur à 3 lignes . La première ligne correspond au seuil.
-
-
+ 
+ 
  - La variable erreur contient l'erreur cumulée calculée pour le passage complet de l'ensemble d'apprentissage à savoir :
-
+ 
  ![image.png](attachment:image.png)
-
-
+         
+        
 La variable erreur sera un vecteur de taille fixée par le nombre d'itération. Cela permettra de représenter l'évolution de l'erreur au cours des itérations de l'apprentissage.
-
-
+ 
+    
 
 ### L'exemple de l'exécution de l'algorithme
 
@@ -331,7 +331,7 @@ La variable erreur sera un vecteur de taille fixée par le nombre d'itération. 
 |   [1,1]     |   1          |
 
 
-* Simulation avec biais α = 0.1
+* Simulation avec biais α = 0.1 
 
 
 
@@ -342,59 +342,59 @@ La variable erreur sera un vecteur de taille fixée par le nombre d'itération. 
 #### Etape 1 ***le perceptron***
 
     h(xt)=Threshold(z)
-
-    où z= w*xt+b
-
+    
+    où z= w*xt+b 
+     
     et Threshold(z)=1 si z >=0 et 0 sinon
-
-
-    # pour l'algo en dessous on utilise la focntion activation
-    # si active == 0 Threshold(z)=
-
+    
+    
+    # pour l'algo en dessous on utilise la focntion activation 
+    # si active == 0 Threshold(z)= 
+    
 Pour x1=[2,0]
-
+    
     h(x1)= [0,0]*[2 0] + 0.5 = 0.5
-
-    donc
-
-    Threshold(0.5)= 1
-
+    
+    donc 
+    
+    Threshold(0.5)= 1 
+    
 #### Etape 2  mettre à jour le ***w*** et le ***b***
-
-    - Si h(xt) = yt , on ne fait pas de mise à jour
-    - Si h(xt) != yt , on fait la mise à jour
+    
+    - Si h(xt) = yt , on ne fait pas de mise à jour 
+    - Si h(xt) != yt , on fait la mise à jour 
         *  w = w + α(y2 - h(x2)) x2
-        *  b = b + α(y2 - h(x2)
+        *  b = b + α(y2 - h(x2) 
+    
+puisque h(x1)=y1 , on ne fait pas de mise à jour 
 
-puisque h(x1)=y1 , on ne fait pas de mise à jour
-
-On continue la boucle
+On continue la boucle 
 
 ####  Pour x2=[0,3]
 
 #### Etape 1 :
-
+  
     h(x2)=[0,0]*[0,3]+0.5 = 1
-
+    
 #### Etape 2 :
      h(x2)!= y2
-
+     
      - mise à jour :
      * w = [0,0] + 0.1 *(0-1) * [0,3] = [0,-0.3]
      * b = [0,0]+0.1*(0-1) = 0.4
+    
+
+On continue la boucle 
+
+    
+   
 
 
-On continue la boucle
-
-
-
-
-
-## L'implementation de l'algorithme le Perceptron en python
+## L'implementation de l'algorithme le Perceptron en python 
 
 
 ```python
-# Le coefficient d'apprentissage α sera égal à 0.1
+# Le coefficient d'apprentissage α sera égal à 0.1 
 def perceptron(x,w,active):
     z=np.dot(x,[w[0][1],w[0][2]]) + w[0][0]
     if active ==0:
@@ -402,7 +402,7 @@ def perceptron(x,w,active):
     else:
         y=np.tanh(z)
     return y
-
+           
 def apprentissage(x,yd,active):
     erreur=[]
     w=np.array([[0.5,0,0]])
@@ -411,27 +411,27 @@ def apprentissage(x,yd,active):
         for i, x_i in enumerate(x):
             y=perceptron([ x_i[0],x_i[1] ],w,active) # Etape 1
             active=np.tanh(y)
-            if(y!=yd[i]):  # Etape 2
-                # mise à jour w
+            if(y!=yd[i]):  # Etape 2 
+                # mise à jour w 
                 tmp=[x_i[0],x_i[1]]
                 val=0.1*(yd[i]-y)
                 wtmp = np.add([w[0][1],w[0][2]],np.dot(val,tmp))
                 w[0][1]=wtmp[0]
                 w[0][2]=wtmp[1]
-
+    
                 # mise à jour b
-
+                
                 w[0][0]=w[0][0] + 0.1*( yd[i] -y)
-
-                # calcul erreur
-
+                
+                # calcul erreur 
+                
                 sum_erreur+=(yd[i]-y)**2
-
+                
         erreur.append(sum_erreur)
-
-
+        
+    
     return w,erreur
-
+   
 def affiche_classe(x,clas,K,w):
     t=[np.min(x[0,:]),np.max(x[0,:])]
     z=[(-w[0,0]-w[0,1]*np.min(x[0,:]))/w[0,2],(-w[0,0]-w[0,1]*np.max(x[0,:]))/w[0,2]]
@@ -448,10 +448,10 @@ def affiche_classe(x,clas,K,w):
 ```python
 # Données de test
 mean1 = [4, 4]
-cov1 = [[1, 0], [0, 1]]  #
+cov1 = [[1, 0], [0, 1]]  # 
 data1 = np.transpose(np.random.multivariate_normal(mean1, cov1, 128))
 mean2 = [-4, -4]
-cov2 = [[4, 0], [0, 4]]  #
+cov2 = [[4, 0], [0, 4]]  # 
 data2 = np.transpose(np.random.multivariate_normal(mean2, cov2, 128))
 data=np.concatenate((data1, data2), axis=1)
 oracle=np.concatenate((np.zeros(128)-1,np.ones(128)))
@@ -463,20 +463,20 @@ affiche_classe(data,oracle,2,w)
 ```
 
 
-
-![png](img/output_15_0.png)
-
-
-
+    
+![png](output_15_0.png)
+    
 
 
-![png](img/output_15_1.png)
 
+    
+![png](output_15_1.png)
+    
 
 
 ### Cette partie du Tp a pour but de mettre en oeuvre un ***Anti-Spam*** en réalisant des modéles de classifieurs binaires construits à l'aide d'un ***DataSet*** basé sur les activités normales et anormales d'une messagerie électronique
 
-### Prétraitement de données
+### Prétraitement de données 
 
 
 ```python
@@ -488,7 +488,7 @@ heads = list(pred.keys())
 pred = pd.read_csv("Uses_Cases/Spam/Spamprediction.csv",skipinitialspace=True,usecols=heads)
 
 # On peut utiliser les fonctions de pandas pour veridier les données
-#pred.describe() #récapitulative sur les données
+#pred.describe() #récapitulative sur les données 
 #pred.tail()  # la dernière ligne
 pred.head()  # la première ligne
 
@@ -680,7 +680,7 @@ for i in range(len(pred.Spam)):
     else:
         freqEmailNo.append(pred.word_freq_mail[i])
         freqNo.append(pred.word_freq_internet[i])
-
+        
 ```
 
 
@@ -707,9 +707,9 @@ plt.show()
 ```
 
 
-
-![png](img/output_20_0.png)
-
+    
+![png](output_20_0.png)
+    
 
 
 
@@ -731,9 +731,9 @@ plt.show()
 ```
 
 
-
-![png](img/output_21_0.png)
-
+    
+![png](output_21_0.png)
+    
 
 
 ### Conclusion du pretraitement  des données
@@ -752,7 +752,7 @@ Donc notre réseau de neurones va analyser ces frequences pour predire si on est
 y=to_categorical(pred.Spam)
 #print(np.sum(y,axis=0)) verifier si on a la bonne distribution des classes
 
-#isoler les descripteurs
+#isoler les descripteurs 
 X= pred.iloc[:,0:pred.shape[1]-1]
 
 
@@ -773,7 +773,7 @@ XtrainSd = cr.fit_transform(Xtrain)
 
 # architecture du réseau: sans couche cachée de 512 neuronnes et sans dropout.
 
-network = Sequential()
+network = Sequential() 
 # Ajouter une couche d'entrée
 network.add(layers.Dense(12,activation='relu',input_shape=(57,)))
 # Ajouter une couche de sortie
@@ -785,9 +785,9 @@ network.add(layers.Dense(2,activation='softmax'))
 
 # compilation - algorithme d'optimisation
 network.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
-
-
-
+            
+    
+   
 # Lancement de l'apprentissage
 network.fit(XtrainSd, Ytrain, epochs=10, batch_size=10, verbose = 1)
 
@@ -835,7 +835,7 @@ y=to_categorical(pred.Spam)
 #y=list(pred.Spam)
 #print(np.sum(y,axis=0)) verifier si on a la bonne distribution des classes
 
-#isoler les descripteurs
+#isoler les descripteurs 
 X= pred.iloc[:,0:pred.shape[1]-1]
 
 # on subdivise 274 en test et 1000 en apprentissage
@@ -854,10 +854,10 @@ XtrainSd = cr.fit_transform(Xtrain)
 
 # architecture du réseau: sans couche cachée de 512 neuronnes et sans dropout.
 
-network = Sequential()
+network = Sequential() 
 # Ajouter une couche d'entrée
 network.add(layers.Dense(12,activation='relu',input_shape=(57,)))
-# Ajouter une couche cachée
+# Ajouter une couche cachée 
 network.add(layers.Dense(8, activation='relu'))
 # Ajouter une couche de sortie
 network.add(layers.Dense(2,activation='softmax'))
@@ -866,9 +866,9 @@ network.add(layers.Dense(2,activation='softmax'))
 
 # compilation - algorithme d'optimisation
 network.compile(optimizer='adam', loss='binary_crossentropy',metrics=['accuracy'])
-
-
-
+            
+    
+   
 # Lancement de l'apprentissage
 network.fit(XtrainSd, Ytrain, epochs=10, batch_size=10, verbose = 1)
 
@@ -932,16 +932,16 @@ On prend comme classe le sexe donc :
 - masculin 4/8 = 0.5
 - féminin 4/8  = 0.5
 
-### Etape 2 :  On regarde la vraisemblance de l'individu à évaluer
+### Etape 2 :  On regarde la vraisemblance de l'individu à évaluer 
 
 d'après notre exemple l'individu à évaluer a ces caracteristiques :
 
 Sexe= inconnu, taille=183, poids= 59, pointure= 20
 
- - On regarde si on connaît la taille de l'individu dans notre tableau d'entrée
-
-
-
+ - On regarde si on connaît la taille de l'individu dans notre tableau d'entrée 
+ 
+ 
+ 
 |Sexe|   Taille(cm)|
 |:--:|:-----------:|
 | M  | 182         |  
@@ -957,29 +957,29 @@ Sexe= inconnu, taille=183, poids= 59, pointure= 20
 
 On voit qu'il n'existe pas la taille 183
 
- - On regarde si on connaît le poids de l'individu dans notre tableau d'entrée
-
-
-
+ - On regarde si on connaît le poids de l'individu dans notre tableau d'entrée 
+ 
+ 
+ 
 |Sexe| Poids(kg)      |
 |:--:|:--------------:|
-| M  |   81,6         |
-| M  |   86,2         |
+| M  |   81,6         | 
+| M  |   86,2         | 
 | M  |   77,1         |
-| M  |   74,8         |
-| F  |   45,4         |
-| F  |   68           |
-| F  |   59           |
+| M  |   74,8         | 
+| F  |   45,4         | 
+| F  |   68           | 
+| F  |   59           | 
 | F  |   68           |  
-
-
+ 
+ 
 on Voit qu'il existe un poids de 59 pour le sexe feminin
 
 
- - On regarde si on connaît la pointure de l'individu dans notre tableau d'entrée
-
-
-
+ - On regarde si on connaît la pointure de l'individu dans notre tableau d'entrée 
+ 
+ 
+ 
 |Sexe|  Pointure(cm) |
 |:--:|:-------------:|
 | M  | 30            |
@@ -992,24 +992,24 @@ on Voit qu'il existe un poids de 59 pour le sexe feminin
 | F  | 23            |
 
 
-On voit qu'il existe une pointure de 20 pour le sexe feminin
+On voit qu'il existe une pointure de 20 pour le sexe feminin 
 
 
 On conclut la vraisemblance est :
 
         -  pour le sexe masculin 1/4 * 1/4 * 1/4 =1/16
         -  pour le sexe feminin  2/4 *1/4 *1/4 = 2/16
-
-
+        
+        
 ### Etape 3 : on calcul la  probabilité postérieure
 
     - pour le sexe masculin 1/16*0.5 = 0.03125
     - pour le sexe feminin  2/16*0.5 = 0.0625
-
-### Conclusion
+    
+### Conclusion 
   La probalilité être du sexe feminin est plus éléve donc elle est une femme
 
-
+ 
 
 
 
@@ -1017,7 +1017,7 @@ On conclut la vraisemblance est :
 dataSet = pd.read_csv("Uses_Cases/Spam/Spamprediction.csv", sep=',', header =(0))
 
 """
-  Cette fonction fait l'etape 1
+  Cette fonction fait l'etape 1 
 """
 def proba_priori(dataSet):
     class_values = list(set(dataSet.Spam))
@@ -1026,13 +1026,13 @@ def proba_priori(dataSet):
     for i in class_values:
         priori[i]  = class_data.count(i)/float(len(class_data))
     return priori
-
-
+    
+    
 """
     Cette fonction fait l'étape 2
 """
 def proba_vraisemblance(dataSet,champ, type_champ, prob):
-
+        
         data_attr = list(dataSet[champ])
         class_data = list(dataSet.Spam)
         match =1
@@ -1040,8 +1040,8 @@ def proba_vraisemblance(dataSet,champ, type_champ, prob):
             if class_data[i] == prob and data_attr[i] == type_champ:
                 match+=1
         return match/float(class_data.count(prob))
-
-
+    
+    
 """
        Cette fonction fait l'étape 2
 """
@@ -1062,10 +1062,10 @@ def classification(proba_vraisemblance,proba_priori):
     pred=[]
     for i in proba_vraisemblance:
         pred.append(reduce(lambda x, y: x*y, proba_vraisemblance[i].values())*proba_priori[i])
-    return (0 if pred[0] > pred[1] else 1) # si c'est un Spam on renvoit 1 sinon 0
+    return (0 if pred[0] > pred[1] else 1) # si c'est un Spam on renvoit 1 sinon 0 
 
 """
-    Faire l'accurancy
+    Faire l'accurancy 
 """
 def accuracy(y_true, y_pred):
     score=0
@@ -1073,9 +1073,9 @@ def accuracy(y_true, y_pred):
         if y_true[i]==y_pred[i]:
             score+=1
     return (score/float(len(y_true)))
-
-
-# L'entraitement
+    
+    
+# L'entraitement 
 proba_priori = proba_priori(dataSet)
 
 # On  test 100 individus  
@@ -1086,10 +1086,10 @@ for i in range(100):
     individu={}
     for cle,item in dataSet.T[i].drop(labels=['Spam']).items():
         individu[cle]=item
-
+        
     vraisemblance = proba_conditional(dataSet,proba_priori,individu)
     predition.append(classification(vraisemblance,proba_priori))
-
+    
 test_accM3 = accuracy(list(dataSet.Spam)[:100],predition)
 # Affichage du résultat
 print ('Acccuracy = ', test_accM3)
@@ -1103,18 +1103,18 @@ print ('Acccuracy = ', test_accM3)
 
 ```python
 x = [0,100]
-y1 = [0,test_accM1]
-y2 = [0,test_accM2]
-y3 = [0,test_accM3]
+y1 = [0,test_accM1] 
+y2 = [0,test_accM2] 
+y3 = [0,test_accM3] 
 plt.plot(x,y1,x,y2,x,y3)
-plt.legend([' Modele M1 ', ' Modele M2 ',' Modele M3 '])
+plt.legend([' Modele M1 ', ' Modele M2 ',' Modele M3 ']) 
 plt.show()
 ```
 
 
+    
+![png](output_31_0.png)
+    
 
-![png](img/output_31_0.png)
 
-
-
-D'après le graphique on remarque que le modele m3 est le plus efficace, au niveau de l'apprentissage
+D'après le graphique on remarque que le modele m3 est le plus efficace, au niveau de l'apprentissage 
